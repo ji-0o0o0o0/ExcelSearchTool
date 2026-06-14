@@ -73,7 +73,7 @@ namespace ExcelSearchTool
             }
             catch (IOException)
             {
-                MessageBox.Show("파일이 열려있어 불러올 수 없습니다.", "오류", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("파일을 불러올 수 없습니다.", "오류", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 

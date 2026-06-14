@@ -162,6 +162,11 @@ namespace ExcelSearchTool
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
+            if (checkedListBox1.CheckedItems.Count == 0)
+            {
+                MessageBox.Show("파일을 선택해주세요.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             string keyword = txtKeyword.Text.Trim();
             if (string.IsNullOrEmpty(keyword))
             {
@@ -237,12 +242,18 @@ namespace ExcelSearchTool
                 lblPath.Text = "(폴더주소)";
                 toolTip1.SetToolTip(lblPath, "");
                 checkedListBox1.Items.Clear();
-                dataGridView1.Rows.Clear();
             }
+            txtKeyword.Text = "";
+            dataGridView1.Rows.Clear();
         }
 
         private void btnMoveFound_Click(object sender, EventArgs e)
         {
+            if (checkedListBox1.CheckedItems.Count == 0)
+            {
+                MessageBox.Show("파일을 선택해주세요.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             string moveFolder = Properties.Settings.Default.MoveFolderPath;
 
             if (string.IsNullOrEmpty(moveFolder) || !Directory.Exists(moveFolder))
@@ -300,6 +311,7 @@ namespace ExcelSearchTool
 
             MessageBox.Show($"{movedCount}개 파일을 이동했습니다.");
             LoadFilesFromFolder(folderPath);
+            dataGridView1.Rows.Clear();
         }
 
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -312,6 +324,8 @@ namespace ExcelSearchTool
             string filePath = Path.Combine(lblPath.Text, fileName);
 
             DetailForm detailForm = new DetailForm(filePath, txtKeyword.Text.Trim());
+            detailForm.StartPosition = FormStartPosition.Manual;
+            detailForm.Location = new Point(this.Location.X + this.Width, this.Location.Y);
             detailForm.Show();
         }
     }
