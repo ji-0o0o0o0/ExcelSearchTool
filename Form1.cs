@@ -54,6 +54,7 @@ namespace ExcelSearchTool
         }
         private void LoadFilesFromFolder(string folderPath)
         {
+            checkedListBox1.ItemCheck -= checkedListBox1_ItemCheck;
             checkedListBox1.Items.Clear();
 
             string[] xlsxFiles = Directory.GetFiles(folderPath, "*.xlsx");
@@ -65,6 +66,12 @@ namespace ExcelSearchTool
                 string fileName = Path.GetFileName(filePath);
                 checkedListBox1.Items.Add(fileName, false);
             }
+
+            chkAll.CheckedChanged -= chkAll_CheckedChanged;
+            chkAll.Checked = false;
+            chkAll.CheckedChanged += chkAll_CheckedChanged;
+
+            checkedListBox1.ItemCheck += checkedListBox1_ItemCheck;
         }
 
         private void chkAll_CheckedChanged(object sender, EventArgs e)
@@ -167,8 +174,21 @@ namespace ExcelSearchTool
                 dataGridView1.Columns.Add("No", "No");
                 dataGridView1.Columns.Add("FileName", "파일명");
                 dataGridView1.Columns.Add("Count", "매칭개수");
-                dataGridView1.Columns["FileName"].Width = 300;
+                dataGridView1.Columns["No"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                dataGridView1.Columns["Count"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                dataGridView1.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+                var btnCol = new DataGridViewButtonColumn();
+                btnCol.Name = "Detail";
+                btnCol.HeaderText = "상세";
+                btnCol.Text = "▶";
+                btnCol.UseColumnTextForButtonValue = true;
+                dataGridView1.Columns.Add(btnCol);
+
                 dataGridView1.Columns["No"].Width = 40;
+                dataGridView1.Columns["FileName"].Width = 300;
+                dataGridView1.Columns["Count"].Width = 40;
+                dataGridView1.Columns["Detail"].Width = 40;
             }
             dataGridView1.Rows.Clear();
 
@@ -182,10 +202,17 @@ namespace ExcelSearchTool
             {
                 string filePath = Path.Combine(folderPath, fileName.ToString());
                 count = SearchInFile(filePath, keyword, includeHidden, caseSensitive);
-                if (count == -1)
-                    dataGridView1.Rows.Add(rowNum, fileName, "사용 중");
-                else
-                    dataGridView1.Rows.Add(rowNum, fileName, count);
+
+                int idx = dataGridView1.Rows.Add(rowNum, fileName, count == -1 ? "사용 중" : count.ToString());
+
+                // 매칭개수 0이거나 사용중이면 버튼 비활성화
+                if (count <= 0)
+                {
+                    dataGridView1.Rows[idx].Cells["Detail"].Value = "";
+                    ((DataGridViewButtonCell)dataGridView1.Rows[idx].Cells["Detail"]).FlatStyle = FlatStyle.Flat;
+                    dataGridView1.Rows[idx].Cells["Detail"].Style.BackColor = Color.LightGray;
+                    dataGridView1.Rows[idx].Cells["Detail"].ReadOnly = true;
+                }
                 rowNum++;
             }
         }
@@ -275,6 +302,17 @@ namespace ExcelSearchTool
             LoadFilesFromFolder(folderPath);
         }
 
-        
+        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+            if (e.ColumnIndex != dataGridView1.Columns["Detail"].Index) return;
+            if (dataGridView1.Rows[e.RowIndex].Cells["Detail"].ReadOnly) return;
+
+            string fileName = dataGridView1.Rows[e.RowIndex].Cells["FileName"].Value.ToString();
+            string filePath = Path.Combine(lblPath.Text, fileName);
+
+            DetailForm detailForm = new DetailForm(filePath, txtKeyword.Text.Trim());
+            detailForm.Show();
+        }
     }
 }
