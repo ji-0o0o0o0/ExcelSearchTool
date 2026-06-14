@@ -60,6 +60,19 @@ var result = MessageBox.Show(
 
 ---
 
+### 6️⃣ DetailForm 추가 검색 시 추출 자동 적용
+추가 검색어를 입력하고 검색 버튼을 누르지 않은 채 추출하면,
+DataGridView에는 필터가 안 된 전체 결과가 보이지만 추출값에는 검색어가 메타정보에 포함되는 불일치 문제가 있었습니다.
+
+추출 버튼 클릭 시 검색어가 입력되어 있으면 자동으로 검색을 먼저 실행하도록 처리했습니다.
+
+```csharp
+if (!string.IsNullOrEmpty(txtSearch.Text.Trim()) && cmbSearchType.SelectedItem.ToString() != "전체")
+    btnSearch_Click(sender, e);
+```
+
+---
+
 ## 🔧 트러블슈팅
 
 ### 검색 결과 개수가 엑셀 "모두 찾기"와 다른 문제
@@ -153,3 +166,23 @@ else
     dataGridView1.Rows.Clear();
 }
 ```
+
+### txt 추출 시 셀값이 줄 잘리는 문제
+**문제**: txt로 추출했을 때 셀값이 중간에 잘려서 다음 줄로 넘어가는 현상 발생.
+
+**원인**: 셀값 안에 줄바꿈 문자(`\n`, `\r`)가 포함된 경우, 탭 구분 txt 형식에서 줄이 깨짐.
+
+**해결**: 추출 시 셀값의 줄바꿈 문자를 공백으로 치환.
+```csharp
+string cellValue = row.Cells["Value"].Value?.ToString()?.Replace("\n", " ").Replace("\r", " ") ?? "";
+```
+
+---
+
+### DetailForm에서 상세보기 버튼 클릭 시 팝업이 2개 뜨는 문제
+**문제**: 상세보기 버튼 클릭 시 DetailForm이 2개씩 열림.
+
+**원인**: `btnSearch_Click`에서 `dataGridView1.Rows.Add()`를 두 번 호출하고 있었음.
+`if/else`로 Add하는 코드와 `int idx = dataGridView1.Rows.Add()`로 Add하는 코드가 중복으로 존재.
+
+**해결**: `if/else` 버전 제거하고 `int idx` 버전만 남김.
