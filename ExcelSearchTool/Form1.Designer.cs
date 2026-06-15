@@ -41,6 +41,7 @@ namespace ExcelSearchTool
             this.chkAll = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.btnSettings = new System.Windows.Forms.Button();
+            this.btnRefresh = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -93,6 +94,7 @@ namespace ExcelSearchTool
             this.txtKeyword.Name = "txtKeyword";
             this.txtKeyword.Size = new System.Drawing.Size(111, 21);
             this.txtKeyword.TabIndex = 4;
+            this.txtKeyword.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtKeyword_KeyDown);
             // 
             // label2
             // 
@@ -147,11 +149,23 @@ namespace ExcelSearchTool
             this.btnSettings.UseVisualStyleBackColor = true;
             this.btnSettings.Click += new System.EventHandler(this.btnSettings_Click);
             // 
+            // btnRefresh
+            // 
+            this.btnRefresh.Location = new System.Drawing.Point(124, 29);
+            this.btnRefresh.Margin = new System.Windows.Forms.Padding(2);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(71, 21);
+            this.btnRefresh.TabIndex = 10;
+            this.btnRefresh.Text = "새로고침";
+            this.btnRefresh.UseVisualStyleBackColor = true;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(507, 501);
+            this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.btnSettings);
             this.Controls.Add(this.chkAll);
             this.Controls.Add(this.btnMoveFound);
@@ -185,6 +199,7 @@ namespace ExcelSearchTool
         private System.Windows.Forms.CheckBox chkAll;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Button btnSettings;
+        private System.Windows.Forms.Button btnRefresh;
     }
 }
 

@@ -87,6 +87,7 @@ namespace ExcelSearchTool
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(111, 21);
             this.txtSearch.TabIndex = 7;
+            this.txtSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSearch_KeyDown);
             // 
             // btnSearch
             // 

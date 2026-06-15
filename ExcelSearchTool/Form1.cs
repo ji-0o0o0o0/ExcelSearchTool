@@ -20,6 +20,7 @@ namespace ExcelSearchTool
         {
             InitializeComponent();
             this.Text = "엑셀 검색 도구";
+            this.Icon = new Icon("icon.ico");
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -58,7 +59,9 @@ namespace ExcelSearchTool
             checkedListBox1.Items.Clear();
 
             string[] xlsxFiles = Directory.GetFiles(folderPath, "*.xlsx");
-            string[] xlsFiles = Directory.GetFiles(folderPath, "*.xls");
+            string[] xlsFiles = Directory.GetFiles(folderPath, "*.xls")
+                .Where(f => !f.ToLower().EndsWith(".xlsx")) // .xlsx 제외
+                .ToArray();
             string[] files = xlsxFiles.Concat(xlsFiles).ToArray();
 
             foreach (string filePath in files)
@@ -327,6 +330,23 @@ namespace ExcelSearchTool
             detailForm.StartPosition = FormStartPosition.Manual;
             detailForm.Location = new Point(this.Location.X + this.Width, this.Location.Y);
             detailForm.Show();
+        }
+
+        private void txtKeyword_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+                btnSearch_Click(sender, e);
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(lblPath.Text) || lblPath.Text == "(폴더주소)")
+            {
+                MessageBox.Show("폴더를 먼저 선택해주세요.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            LoadFilesFromFolder(lblPath.Text);
         }
     }
 }

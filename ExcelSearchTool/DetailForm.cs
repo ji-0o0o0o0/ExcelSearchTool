@@ -24,6 +24,8 @@ namespace ExcelSearchTool
         public DetailForm(string filePath, string keyword)
         {
             InitializeComponent();
+            this.Text = "상세보기";
+            this.Icon = new Icon("icon.ico");
             _filePath = filePath;
             _keyword = keyword;
             lblFileName.Text = Path.GetFileName(filePath);
@@ -277,6 +279,12 @@ namespace ExcelSearchTool
             {
                 txtSearch.Enabled = true;
             }
+        }
+
+        private void txtSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+                btnSearch_Click(sender, e);
         }
     }
 }

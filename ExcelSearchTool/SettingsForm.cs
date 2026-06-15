@@ -16,6 +16,7 @@ namespace ExcelSearchTool
         {
             InitializeComponent();
             this.Text = "설정";
+            this.Icon = new Icon("icon.ico");
         }
 
         private void btnBack_Click(object sender, EventArgs e)
@@ -110,7 +111,7 @@ namespace ExcelSearchTool
 
             Properties.Settings.Default.DefaultFolderPath = "";
             Properties.Settings.Default.MoveFolderPath = "";
-            Properties.Settings.Default.CaseSensitive = false;
+            Properties.Settings.Default.CaseSensitive = true;
             Properties.Settings.Default.IncludeHiddenSheets = false;
             Properties.Settings.Default.Save();
 
@@ -119,7 +120,7 @@ namespace ExcelSearchTool
             lblMoveFolder.Text = "(지정안됨)";
             toolTip1.SetToolTip(lblDefaultFolder, "");
             toolTip1.SetToolTip(lblMoveFolder, "");
-            rbCaseInsensitive.Checked = true;
+            rbCaseSensitive.Checked = true;
             rbHiddenExclude.Checked = true;
 
             MessageBox.Show("초기화되었습니다.");
