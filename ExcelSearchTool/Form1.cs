@@ -195,8 +195,8 @@ namespace ExcelSearchTool
 
                 dataGridView1.Columns["No"].Width = 40;
                 dataGridView1.Columns["FileName"].Width = 300;
-                dataGridView1.Columns["Count"].Width = 40;
-                dataGridView1.Columns["Detail"].Width = 40;
+                dataGridView1.Columns["Count"].Width = 60;
+                dataGridView1.Columns["Detail"].Width = 35;
             }
             dataGridView1.Rows.Clear();
 

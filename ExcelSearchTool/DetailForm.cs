@@ -55,6 +55,7 @@ namespace ExcelSearchTool
             dataGridView1.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             LoadDetail();
+            LoadSheets();
         }
 
         private void LoadDetail()
@@ -119,39 +120,7 @@ namespace ExcelSearchTool
             workbook.Close();
         }
 
-        private void btnSearch_Click(object sender, EventArgs e)
-        {
-            string keyword = txtSearch.Text.Trim();
-            string searchType = cmbSearchType.SelectedItem.ToString();
-            bool caseSensitive = Properties.Settings.Default.CaseSensitive;
-
-            dataGridView1.Rows.Clear();
-
-            int no = 1;
-            foreach (var row in _allRows)
-            {
-                string sheetName = caseSensitive ? row[1] : row[1].ToLower();
-                string cellValue = caseSensitive ? row[4] : row[4].ToLower();
-                string kw = caseSensitive ? keyword : keyword.ToLower();
-
-                bool match = string.IsNullOrEmpty(keyword);
-                if (!match)
-                {
-                    if (searchType == "전체")
-                        match = sheetName.Contains(kw) || cellValue.Contains(kw);
-                    else if (searchType == "시트명")
-                        match = sheetName.Contains(kw);
-                    else if (searchType == "셀값")
-                        match = cellValue.Contains(kw);
-                }
-
-                if (match)
-                {
-                    dataGridView1.Rows.Add(no, row[1], row[2], row[3], row[4]);
-                    no++;
-                }
-            }
-        }
+       
 
         private void btnExport_Click(object sender, EventArgs e)
         {
@@ -285,6 +254,344 @@ namespace ExcelSearchTool
         {
             if (e.KeyCode == Keys.Enter)
                 btnSearch_Click(sender, e);
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            string keyword = txtSearch.Text.Trim();
+            string searchType = cmbSearchType.SelectedItem.ToString();
+            bool caseSensitive = Properties.Settings.Default.CaseSensitive;
+
+            dataGridView1.Rows.Clear();
+
+            int no = 1;
+            foreach (var row in _allRows)
+            {
+                string sheetName = caseSensitive ? row[1] : row[1].ToLower();
+                string cellValue = caseSensitive ? row[4] : row[4].ToLower();
+                string kw = caseSensitive ? keyword : keyword.ToLower();
+
+                bool match = string.IsNullOrEmpty(keyword);
+                if (!match)
+                {
+                    if (searchType == "전체")
+                        match = sheetName.Contains(kw) || cellValue.Contains(kw);
+                    else if (searchType == "시트명")
+                        match = sheetName.Contains(kw);
+                    else if (searchType == "셀값")
+                        match = cellValue.Contains(kw);
+                }
+
+                if (match)
+                {
+                    dataGridView1.Rows.Add(no, row[1], row[2], row[3], row[4]);
+                    no++;
+                }
+            }
+        }
+
+        //------------------
+        private void LoadSheets()
+        {
+            cmbSheet.Items.Clear();
+            IWorkbook workbook;
+
+            try
+            {
+                using (FileStream fs = new FileStream(_filePath, FileMode.Open, FileAccess.Read))
+                {
+                    if (_filePath.ToLower().EndsWith(".xlsx"))
+                        workbook = new XSSFWorkbook(fs);
+                    else
+                        workbook = new HSSFWorkbook(fs);
+                }
+            }
+            catch (IOException)
+            {
+                return;
+            }
+
+            bool includeHidden = Properties.Settings.Default.IncludeHiddenSheets;
+
+            for (int s = 0; s < workbook.NumberOfSheets; s++)
+            {
+                if (!includeHidden && (workbook.IsSheetHidden(s) || workbook.IsSheetVeryHidden(s)))
+                    continue;
+                cmbSheet.Items.Add(workbook.GetSheetAt(s).SheetName);
+            }
+
+            workbook.Close();
+
+            if (cmbSheet.Items.Count > 0)
+                cmbSheet.SelectedIndex = 0;
+        }
+
+        private void cmbSheet_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            clbColumns.Items.Clear();
+            cmbColumnFilter.Items.Clear();
+            cmbColumnFilter.Items.Add("전체");
+            cmbColumnFilter.SelectedIndex = 0;
+            txtColumnFilter.Enabled = false;
+            dgvSheet.Columns.Clear();
+            dgvSheet.Rows.Clear();
+
+            if (cmbSheet.SelectedItem == null) return;
+
+            IWorkbook workbook;
+            try
+            {
+                using (FileStream fs = new FileStream(_filePath, FileMode.Open, FileAccess.Read))
+                {
+                    if (_filePath.ToLower().EndsWith(".xlsx"))
+                        workbook = new XSSFWorkbook(fs);
+                    else
+                        workbook = new HSSFWorkbook(fs);
+                }
+            }
+            catch (IOException) { return; }
+
+            ISheet sheet = workbook.GetSheet(cmbSheet.SelectedItem.ToString());
+            int headerRowIdx = (int)numHeaderRow.Value - 1; // 사용자 입력은 1부터 시작
+            IRow headerRow = sheet.GetRow(headerRowIdx);
+            if (headerRow == null) { workbook.Close(); return; }
+
+            for (int c = 0; c < headerRow.LastCellNum; c++)
+            {
+                ICell cell = headerRow.GetCell(c);
+                string colName = cell != null && !string.IsNullOrEmpty(cell.ToString())
+                    ? cell.ToString()
+                    : $"열{c + 1}";
+                clbColumns.Items.Add(colName, false);
+            }
+
+            workbook.Close();
+        }
+
+        private void clbColumns_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            this.BeginInvoke((MethodInvoker)delegate
+            {
+                cmbColumnFilter.Items.Clear();
+                cmbColumnFilter.Items.Add("전체");
+
+                foreach (string item in clbColumns.CheckedItems)
+                    cmbColumnFilter.Items.Add(item);
+
+                cmbColumnFilter.SelectedIndex = 0;
+                txtColumnFilter.Enabled = false;
+            });
+        }
+
+        private void chkAllColumns_CheckedChanged(object sender, EventArgs e)
+        {
+            clbColumns.ItemCheck -= clbColumns_ItemCheck;
+            for (int i = 0; i < clbColumns.Items.Count; i++)
+                clbColumns.SetItemChecked(i, chkAllColumns.Checked);
+            clbColumns.ItemCheck += clbColumns_ItemCheck;
+
+            cmbColumnFilter.Items.Clear();
+            cmbColumnFilter.Items.Add("전체");
+            if (chkAllColumns.Checked)
+                foreach (string item in clbColumns.Items)
+                    cmbColumnFilter.Items.Add(item);
+            cmbColumnFilter.SelectedIndex = 0;
+            txtColumnFilter.Enabled = false;
+        }
+
+        private void cmbColumnFilter_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmbColumnFilter.SelectedItem?.ToString() == "전체")
+            {
+                txtColumnFilter.Text = "";
+                txtColumnFilter.Enabled = false;
+            }
+            else
+            {
+                txtColumnFilter.Enabled = true;
+            }
+        }
+
+        private void btnSheetSearch_Click(object sender, EventArgs e)
+        {
+            IWorkbook workbook;
+            try
+            {
+                using (FileStream fs = new FileStream(_filePath, FileMode.Open, FileAccess.Read))
+                {
+                    if (_filePath.ToLower().EndsWith(".xlsx"))
+                        workbook = new XSSFWorkbook(fs);
+                    else
+                        workbook = new HSSFWorkbook(fs);
+                }
+            }
+            catch (IOException) { return; }
+
+            int headerRowIdx = (int)numHeaderRow.Value - 1;
+            ISheet sheet = workbook.GetSheet(cmbSheet.SelectedItem.ToString());
+            IRow headerRow = sheet.GetRow(headerRowIdx);
+            if (headerRow == null) { workbook.Close(); return; }
+
+            var selectedCols = new Dictionary<int, string>();
+            for (int c = 0; c < headerRow.LastCellNum; c++)
+            {
+                ICell cell = headerRow.GetCell(c);
+                string colName = cell != null ? cell.ToString() : $"열{c + 1}";
+
+                if (clbColumns.CheckedItems.Count == 0 || clbColumns.CheckedItems.Contains(colName))
+                    selectedCols[c] = colName;
+            }
+
+            // 그리드 초기화
+            dgvSheet.Columns.Clear();
+            dgvSheet.Rows.Clear();
+            foreach (var col in selectedCols.Values)
+                dgvSheet.Columns.Add(col, col);
+            dgvSheet.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            // 필터 조건
+            string filterCol = cmbColumnFilter.SelectedItem?.ToString();
+            string filterKw = txtColumnFilter.Text.Trim();
+            bool caseSensitive = Properties.Settings.Default.CaseSensitive;
+
+            // 데이터는 헤더 다음 행부터
+            for (int r = headerRowIdx + 1; r <= sheet.LastRowNum; r++)
+            {
+                IRow row = sheet.GetRow(r);
+                if (row == null) continue;
+
+                var rowValues = new Dictionary<int, string>();
+                foreach (var kvp in selectedCols)
+                {
+                    ICell cell = row.GetCell(kvp.Key);
+                    rowValues[kvp.Key] = cell != null ? cell.ToString() : "";
+                }
+
+                // 필터 적용
+                bool match = true;
+                if (filterCol != "전체" && !string.IsNullOrEmpty(filterKw))
+                {
+                    int filterColIdx = selectedCols.FirstOrDefault(x => x.Value == filterCol).Key;
+                    string cellVal = caseSensitive ? rowValues[filterColIdx] : rowValues[filterColIdx].ToLower();
+                    string kw = caseSensitive ? filterKw : filterKw.ToLower();
+                    match = cellVal.Contains(kw);
+                }
+
+                if (match)
+                {
+                    var values = selectedCols.Keys.Select(k => rowValues[k]).ToArray();
+                    dgvSheet.Rows.Add(values);
+                }
+            }
+
+            workbook.Close();
+        }
+
+        private void btnSheetExport_Click(object sender, EventArgs e)
+        {
+            if (dgvSheet.Rows.Count == 0)
+            {
+                MessageBox.Show("추출할 데이터가 없습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var result = MessageBox.Show(
+                "추출 형식을 선택하세요.\n\n[예] txt\n[아니오] xlsx\n[취소] 취소",
+                "추출 형식 선택",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+                ExportSheetToTxt();
+            else if (result == DialogResult.No)
+                ExportSheetToXlsx();
+        }
+
+        private void ExportSheetToTxt()
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "텍스트 파일|*.txt";
+            sfd.FileName = Path.GetFileNameWithoutExtension(_filePath) + "_시트검색";
+            if (sfd.ShowDialog() != DialogResult.OK) return;
+
+            using (StreamWriter sw = new StreamWriter(sfd.FileName, false, System.Text.Encoding.UTF8))
+            {
+                sw.WriteLine($"파일명: {Path.GetFileName(_filePath)}");
+                sw.WriteLine($"검색어: {_keyword}");
+                sw.WriteLine($"시트: {cmbSheet.SelectedItem}");
+                if (cmbColumnFilter.SelectedItem?.ToString() != "전체" && !string.IsNullOrEmpty(txtColumnFilter.Text))
+                {
+                    sw.WriteLine($"컬럼 검색 대상: {cmbColumnFilter.SelectedItem} | 검색어: {txtColumnFilter.Text.Trim()}");
+                }
+                sw.WriteLine($"추출일시: {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+                sw.WriteLine("----------------------------------------");
+
+                // 헤더
+                sw.WriteLine(string.Join("\t", dgvSheet.Columns.Cast<DataGridViewColumn>().Select(c => c.HeaderText)));
+
+                // 데이터
+                foreach (DataGridViewRow row in dgvSheet.Rows)
+                {
+                    var values = dgvSheet.Columns.Cast<DataGridViewColumn>()
+                        .Select(c => row.Cells[c.Name].Value?.ToString()?.Replace("\n", " ").Replace("\r", " ") ?? "");
+                    sw.WriteLine(string.Join("\t", values));
+                }
+            }
+            MessageBox.Show("txt로 추출 완료!");
+        }
+
+        private void ExportSheetToXlsx()
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "엑셀 파일|*.xlsx";
+            sfd.FileName = Path.GetFileNameWithoutExtension(_filePath) + "_시트검색";
+            if (sfd.ShowDialog() != DialogResult.OK) return;
+
+            IWorkbook wb = new XSSFWorkbook();
+            ISheet sheet = wb.CreateSheet("시트검색결과");
+            int rowIdx = 0;
+
+            sheet.CreateRow(rowIdx++).CreateCell(0).SetCellValue($"파일명: {Path.GetFileName(_filePath)}");
+            sheet.CreateRow(rowIdx++).CreateCell(0).SetCellValue($"검색어: {_keyword}");
+            sheet.CreateRow(rowIdx++).CreateCell(0).SetCellValue($"시트: {cmbSheet.SelectedItem}");
+            if (cmbColumnFilter.SelectedItem?.ToString() != "전체" && !string.IsNullOrEmpty(txtColumnFilter.Text))
+                sheet.CreateRow(rowIdx++).CreateCell(0).SetCellValue($"컬럼 검색 대상: {cmbColumnFilter.SelectedItem} | 검색어: {txtColumnFilter.Text.Trim()}");
+            sheet.CreateRow(rowIdx++).CreateCell(0).SetCellValue($"추출일시: {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+            sheet.CreateRow(rowIdx++);
+
+            // 헤더
+            IRow header = sheet.CreateRow(rowIdx++);
+            for (int c = 0; c < dgvSheet.Columns.Count; c++)
+                header.CreateCell(c).SetCellValue(dgvSheet.Columns[c].HeaderText);
+
+            // 데이터
+            foreach (DataGridViewRow row in dgvSheet.Rows)
+            {
+                IRow r = sheet.CreateRow(rowIdx++);
+                for (int c = 0; c < dgvSheet.Columns.Count; c++)
+                    r.CreateCell(c).SetCellValue(row.Cells[c].Value?.ToString() ?? "");
+            }
+
+            using (FileStream fs = new FileStream(sfd.FileName, FileMode.Create))
+                wb.Write(fs);
+
+            MessageBox.Show("xlsx로 추출 완료!");
+        }
+
+        private void btnSheetClose_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void txtColumnFilter_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+                btnSheetSearch_Click(sender, e);
+        }
+
+        private void numHeaderRow_ValueChanged(object sender, EventArgs e)
+        {
+            cmbSheet_SelectedIndexChanged(sender, e);
         }
     }
 }
