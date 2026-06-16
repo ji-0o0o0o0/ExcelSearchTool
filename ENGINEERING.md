@@ -73,6 +73,25 @@ if (!string.IsNullOrEmpty(txtSearch.Text.Trim()) && cmbSearchType.SelectedItem.T
 
 ---
 
+### 7️⃣ 시트 검색 탭: 헤더 행 지정 vs 열 이름(A열/B열) 방식
+처음에는 헤더 행 번호를 직접 입력해서 컬럼명을 가져오는 방식을 시도했습니다.
+하지만 헤더가 없거나 첫 행에 없는 경우가 많아서, 그냥 A열/B열/C열 형식으로 표시하는 방식으로 변경했습니다.
+사용자가 직접 보면서 필요한 열만 체크하는 방식이 더 직관적이고 유연합니다.
+
+---
+
+### 8️⃣ 시트 검색 탭: 전체 시트 vs 매칭된 시트만 표시
+처음에는 모든 시트를 콤보박스에 표시했으나, 검색어와 무관한 시트까지 나와서 혼란스러웠습니다.
+메인 검색어로 매칭된 행이 있는 시트만 콤보박스에 표시하도록 변경하여, 상세보기의 목적(매칭 결과 분석)에 맞게 개선했습니다.
+
+---
+
+### 9️⃣ 다중 검색어: Form1 vs DetailForm
+Form1에서도 다중 검색어를 지원하면 DetailForm에 키워드를 넘기는 부분이 복잡해지고 (`string` → `List<string>`) 코드가 꼬일 수 있었습니다.
+DetailForm(셀검색/시트검색) 내 추가 필터링에서만 다중 검색어를 지원하는 방식으로 범위를 한정했습니다.
+
+---
+
 ## 🔧 트러블슈팅
 
 ### 검색 결과 개수가 엑셀 "모두 찾기"와 다른 문제
@@ -186,3 +205,13 @@ string cellValue = row.Cells["Value"].Value?.ToString()?.Replace("\n", " ").Repl
 `if/else`로 Add하는 코드와 `int idx = dataGridView1.Rows.Add()`로 Add하는 코드가 중복으로 존재.
 
 **해결**: `if/else` 버전 제거하고 `int idx` 버전만 남김.
+
+---
+
+### clbColumns_ItemCheck에서 체크 후 자동 검색 타이밍 문제
+**문제**: `CheckedListBox`의 `ItemCheck` 이벤트에서 `btnSheetSearch_Click`을 호출하면 체크 상태가 아직 반영되기 전에 검색이 실행됨.
+
+**시도 1**: `BeginInvoke`로 지연 실행 → 디버그 모드에서만 동작, 일반 실행 시 타이밍 불일치<br>
+**시도 2**: `e.NewValue`로 직접 체크 목록 구성 후 별도 메서드(`ExecuteSheetSearch`) 호출 → 동일 문제
+
+**결론**: 자동 검색 기능 포기. 검색 버튼 클릭 또는 엔터로만 검색하도록 변경. `ItemCheck`는 콤보박스 갱신 용도로만 사용.
