@@ -195,6 +195,7 @@ namespace ExcelSearchTool
             // 
             // dgvSheet
             // 
+            this.dgvSheet.AllowUserToOrderColumns = true;
             this.dgvSheet.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvSheet.EnableHeadersVisualStyles = false;
             this.dgvSheet.Location = new System.Drawing.Point(8, 71);
@@ -254,6 +255,7 @@ namespace ExcelSearchTool
             // 
             // cmbSearchType
             // 
+            this.cmbSearchType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbSearchType.Font = new System.Drawing.Font("굴림", 9F);
             this.cmbSearchType.FormattingEnabled = true;
             this.cmbSearchType.Location = new System.Drawing.Point(440, 41);
@@ -319,6 +321,7 @@ namespace ExcelSearchTool
             // 
             // dataGridView1
             // 
+            this.dataGridView1.AllowUserToOrderColumns = true;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Location = new System.Drawing.Point(19, 72);
             this.dataGridView1.Name = "dataGridView1";

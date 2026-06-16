@@ -111,9 +111,8 @@ namespace ExcelSearchTool
                         string compareValue = caseSensitive ? cellValue : cellValue.ToLower();
                         if (!compareValue.Contains(compareKeyword)) continue;
 
-                        string[] rowData = new string[] { no.ToString(), sheet.SheetName, (r + 1).ToString(), (c + 1).ToString(), cellValue };
-                        _allRows.Add(rowData);
-                        dataGridView1.Rows.Add(rowData);
+                        _allRows.Add(new string[] { no.ToString(), sheet.SheetName, (r + 1).ToString(), (c + 1).ToString(), cellValue });
+                        dataGridView1.Rows.Add(no, sheet.SheetName, r + 1, c + 1, cellValue);
                         no++;
                     }
                 }
@@ -260,9 +259,14 @@ namespace ExcelSearchTool
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            string keyword = txtSearch.Text.Trim();
+            string keywordInput = txtSearch.Text.Trim();
             string searchType = cmbSearchType.SelectedItem.ToString();
             bool caseSensitive = Properties.Settings.Default.CaseSensitive;
+
+            // 쉼표로 구분해서 여러 키워드
+            List<string> keywords = string.IsNullOrEmpty(keywordInput)
+                ? new List<string>()
+                : keywordInput.Split(',').Select(k => k.Trim()).Where(k => !string.IsNullOrEmpty(k)).ToList();
 
             dataGridView1.Rows.Clear();
 
@@ -271,17 +275,28 @@ namespace ExcelSearchTool
             {
                 string sheetName = caseSensitive ? row[1] : row[1].ToLower();
                 string cellValue = caseSensitive ? row[4] : row[4].ToLower();
-                string kw = caseSensitive ? keyword : keyword.ToLower();
 
-                bool match = string.IsNullOrEmpty(keyword);
+                bool match = keywords.Count == 0; // 키워드 없으면 전체
                 if (!match)
                 {
                     if (searchType == "전체")
-                        match = sheetName.Contains(kw) || cellValue.Contains(kw);
+                        match = keywords.Any(kw =>
+                        {
+                            string k = caseSensitive ? kw : kw.ToLower();
+                            return sheetName.Contains(k) || cellValue.Contains(k);
+                        });
                     else if (searchType == "시트명")
-                        match = sheetName.Contains(kw);
+                        match = keywords.Any(kw =>
+                        {
+                            string k = caseSensitive ? kw : kw.ToLower();
+                            return sheetName.Contains(k);
+                        });
                     else if (searchType == "셀값")
-                        match = cellValue.Contains(kw);
+                        match = keywords.Any(kw =>
+                        {
+                            string k = caseSensitive ? kw : kw.ToLower();
+                            return cellValue.Contains(k);
+                        });
                 }
 
                 if (match)
@@ -529,6 +544,11 @@ namespace ExcelSearchTool
             string filterCol = cmbColumnFilter.SelectedItem?.ToString();
             string filterKw = txtColumnFilter.Text.Trim();
 
+            // 쉼표로 구분
+            List<string> filterKeywords = string.IsNullOrEmpty(filterKw)
+                ? new List<string>()
+                : filterKw.Split(',').Select(k => k.Trim()).Where(k => !string.IsNullOrEmpty(k)).ToList();
+
             // 매칭된 행만 가져오기
             for (int r = 0; r <= sheet.LastRowNum; r++)
             {
@@ -559,14 +579,18 @@ namespace ExcelSearchTool
                 }
 
                 bool match = true;
-                if (filterCol != "전체" && !string.IsNullOrEmpty(filterKw))
+                if (filterCol != "전체" && filterKeywords.Count > 0)
                 {
                     int filterColIdx = ColNameToIndex(filterCol);
                     string cellVal = caseSensitive
-                                     ? (rowValues.ContainsKey(filterColIdx) ? rowValues[filterColIdx] : "")
-                                     : (rowValues.ContainsKey(filterColIdx) ? rowValues[filterColIdx] : "").ToLower();
-                    string kw = caseSensitive ? filterKw : filterKw.ToLower();
-                    match = cellVal.Contains(kw);
+                        ? (rowValues.ContainsKey(filterColIdx) ? rowValues[filterColIdx] : "")
+                        : (rowValues.ContainsKey(filterColIdx) ? rowValues[filterColIdx] : "").ToLower();
+
+                    match = filterKeywords.Any(kw =>
+                    {
+                        string k = caseSensitive ? kw : kw.ToLower();
+                        return cellVal.Contains(k);
+                    });
                 }
 
                 if (match)
