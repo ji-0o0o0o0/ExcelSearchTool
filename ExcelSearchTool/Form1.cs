@@ -322,7 +322,7 @@ namespace ExcelSearchTool
             if (e.RowIndex < 0) return;
             if (e.ColumnIndex != dataGridView1.Columns["Detail"].Index) return;
             if (dataGridView1.Rows[e.RowIndex].Cells["Detail"].ReadOnly) return;
-
+            if (dataGridView1.Rows[e.RowIndex].Cells["FileName"].Value == null) return;
             string fileName = dataGridView1.Rows[e.RowIndex].Cells["FileName"].Value.ToString();
             string filePath = Path.Combine(lblPath.Text, fileName);
 

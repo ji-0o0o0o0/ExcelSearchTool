@@ -31,17 +31,15 @@ namespace ExcelSearchTool
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.label7 = new System.Windows.Forms.Label();
             this.chkAllColumns = new System.Windows.Forms.CheckBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.txtSheetSearch = new System.Windows.Forms.Label();
-            this.cmbColumnFilter = new System.Windows.Forms.ComboBox();
             this.btnSheetExport = new System.Windows.Forms.Button();
             this.btnSheetClose = new System.Windows.Forms.Button();
+            this.clbColumns = new System.Windows.Forms.CheckedListBox();
+            this.lblSheetKeyword = new System.Windows.Forms.Label();
+            this.cmbColumnFilter = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
             this.txtColumnFilter = new System.Windows.Forms.TextBox();
             this.btnSheetSearch = new System.Windows.Forms.Button();
-            this.clbColumns = new System.Windows.Forms.CheckedListBox();
             this.dgvSheet = new System.Windows.Forms.DataGridView();
             this.label3 = new System.Windows.Forms.Label();
             this.cmbSheet = new System.Windows.Forms.ComboBox();
@@ -56,14 +54,13 @@ namespace ExcelSearchTool
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.lblFileName = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.numHeaderRow = new System.Windows.Forms.NumericUpDown();
+            this.lblSheetFileName = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSheet)).BeginInit();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numHeaderRow)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -78,19 +75,17 @@ namespace ExcelSearchTool
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.numHeaderRow);
-            this.tabPage1.Controls.Add(this.label8);
-            this.tabPage1.Controls.Add(this.label7);
-            this.tabPage1.Controls.Add(this.chkAllColumns);
+            this.tabPage1.Controls.Add(this.lblSheetFileName);
             this.tabPage1.Controls.Add(this.label6);
-            this.tabPage1.Controls.Add(this.txtSheetSearch);
-            this.tabPage1.Controls.Add(this.cmbColumnFilter);
+            this.tabPage1.Controls.Add(this.chkAllColumns);
             this.tabPage1.Controls.Add(this.btnSheetExport);
             this.tabPage1.Controls.Add(this.btnSheetClose);
+            this.tabPage1.Controls.Add(this.clbColumns);
+            this.tabPage1.Controls.Add(this.lblSheetKeyword);
+            this.tabPage1.Controls.Add(this.cmbColumnFilter);
             this.tabPage1.Controls.Add(this.label5);
             this.tabPage1.Controls.Add(this.txtColumnFilter);
             this.tabPage1.Controls.Add(this.btnSheetSearch);
-            this.tabPage1.Controls.Add(this.clbColumns);
             this.tabPage1.Controls.Add(this.dgvSheet);
             this.tabPage1.Controls.Add(this.label3);
             this.tabPage1.Controls.Add(this.cmbSheet);
@@ -103,63 +98,25 @@ namespace ExcelSearchTool
             this.tabPage1.Text = "시트 검색";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label7.Location = new System.Drawing.Point(8, 416);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(96, 16);
-            this.label7.TabIndex = 32;
-            this.label7.Text = "* 컬럼 검색";
-            // 
             // chkAllColumns
             // 
             this.chkAllColumns.AutoSize = true;
-            this.chkAllColumns.Location = new System.Drawing.Point(14, 72);
+            this.chkAllColumns.Location = new System.Drawing.Point(748, 72);
             this.chkAllColumns.Name = "chkAllColumns";
             this.chkAllColumns.Size = new System.Drawing.Size(106, 16);
-            this.chkAllColumns.TabIndex = 31;
+            this.chkAllColumns.TabIndex = 41;
             this.chkAllColumns.Text = "전체 선택/해제";
             this.chkAllColumns.UseVisualStyleBackColor = true;
             this.chkAllColumns.CheckedChanged += new System.EventHandler(this.chkAllColumns_CheckedChanged);
             // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label6.Location = new System.Drawing.Point(8, 45);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(119, 16);
-            this.label6.TabIndex = 30;
-            this.label6.Text = "* 컬럼명 선택 ";
-            // 
-            // txtSheetSearch
-            // 
-            this.txtSheetSearch.AutoSize = true;
-            this.txtSheetSearch.Location = new System.Drawing.Point(467, 19);
-            this.txtSheetSearch.Name = "txtSheetSearch";
-            this.txtSheetSearch.Size = new System.Drawing.Size(0, 12);
-            this.txtSheetSearch.TabIndex = 29;
-            // 
-            // cmbColumnFilter
-            // 
-            this.cmbColumnFilter.Font = new System.Drawing.Font("굴림", 9F);
-            this.cmbColumnFilter.FormattingEnabled = true;
-            this.cmbColumnFilter.Location = new System.Drawing.Point(15, 439);
-            this.cmbColumnFilter.Name = "cmbColumnFilter";
-            this.cmbColumnFilter.Size = new System.Drawing.Size(111, 20);
-            this.cmbColumnFilter.TabIndex = 28;
-            this.cmbColumnFilter.SelectedIndexChanged += new System.EventHandler(this.cmbColumnFilter_SelectedIndexChanged);
-            // 
             // btnSheetExport
             // 
             this.btnSheetExport.Font = new System.Drawing.Font("굴림", 9F);
-            this.btnSheetExport.Location = new System.Drawing.Point(758, 13);
+            this.btnSheetExport.Location = new System.Drawing.Point(759, 473);
             this.btnSheetExport.Margin = new System.Windows.Forms.Padding(2);
             this.btnSheetExport.Name = "btnSheetExport";
             this.btnSheetExport.Size = new System.Drawing.Size(71, 21);
-            this.btnSheetExport.TabIndex = 27;
+            this.btnSheetExport.TabIndex = 39;
             this.btnSheetExport.Text = "추출";
             this.btnSheetExport.UseVisualStyleBackColor = true;
             this.btnSheetExport.Click += new System.EventHandler(this.btnSheetExport_Click);
@@ -167,19 +124,48 @@ namespace ExcelSearchTool
             // btnSheetClose
             // 
             this.btnSheetClose.Font = new System.Drawing.Font("굴림", 9F);
-            this.btnSheetClose.Location = new System.Drawing.Point(833, 13);
+            this.btnSheetClose.Location = new System.Drawing.Point(834, 473);
             this.btnSheetClose.Margin = new System.Windows.Forms.Padding(2);
             this.btnSheetClose.Name = "btnSheetClose";
             this.btnSheetClose.Size = new System.Drawing.Size(71, 21);
-            this.btnSheetClose.TabIndex = 26;
+            this.btnSheetClose.TabIndex = 38;
             this.btnSheetClose.Text = "닫기";
             this.btnSheetClose.UseVisualStyleBackColor = true;
             this.btnSheetClose.Click += new System.EventHandler(this.btnSheetClose_Click);
             // 
+            // clbColumns
+            // 
+            this.clbColumns.CheckOnClick = true;
+            this.clbColumns.FormattingEnabled = true;
+            this.clbColumns.Location = new System.Drawing.Point(745, 94);
+            this.clbColumns.Name = "clbColumns";
+            this.clbColumns.Size = new System.Drawing.Size(169, 308);
+            this.clbColumns.TabIndex = 37;
+            this.clbColumns.KeyDown += new System.Windows.Forms.KeyEventHandler(this.clbColumns_KeyDown);
+            // 
+            // lblSheetKeyword
+            // 
+            this.lblSheetKeyword.AutoSize = true;
+            this.lblSheetKeyword.Location = new System.Drawing.Point(367, 44);
+            this.lblSheetKeyword.Name = "lblSheetKeyword";
+            this.lblSheetKeyword.Size = new System.Drawing.Size(0, 12);
+            this.lblSheetKeyword.TabIndex = 29;
+            // 
+            // cmbColumnFilter
+            // 
+            this.cmbColumnFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbColumnFilter.Font = new System.Drawing.Font("굴림", 9F);
+            this.cmbColumnFilter.FormattingEnabled = true;
+            this.cmbColumnFilter.Location = new System.Drawing.Point(570, 40);
+            this.cmbColumnFilter.Name = "cmbColumnFilter";
+            this.cmbColumnFilter.Size = new System.Drawing.Size(111, 20);
+            this.cmbColumnFilter.TabIndex = 28;
+            this.cmbColumnFilter.SelectedIndexChanged += new System.EventHandler(this.cmbColumnFilter_SelectedIndexChanged);
+            // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(418, 19);
+            this.label5.Location = new System.Drawing.Point(318, 44);
             this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(53, 12);
@@ -189,7 +175,7 @@ namespace ExcelSearchTool
             // txtColumnFilter
             // 
             this.txtColumnFilter.Font = new System.Drawing.Font("굴림", 9F);
-            this.txtColumnFilter.Location = new System.Drawing.Point(14, 465);
+            this.txtColumnFilter.Location = new System.Drawing.Point(687, 39);
             this.txtColumnFilter.Name = "txtColumnFilter";
             this.txtColumnFilter.Size = new System.Drawing.Size(152, 21);
             this.txtColumnFilter.TabIndex = 24;
@@ -198,7 +184,7 @@ namespace ExcelSearchTool
             // btnSheetSearch
             // 
             this.btnSheetSearch.Font = new System.Drawing.Font("굴림", 9F);
-            this.btnSheetSearch.Location = new System.Drawing.Point(683, 15);
+            this.btnSheetSearch.Location = new System.Drawing.Point(844, 39);
             this.btnSheetSearch.Margin = new System.Windows.Forms.Padding(2);
             this.btnSheetSearch.Name = "btnSheetSearch";
             this.btnSheetSearch.Size = new System.Drawing.Size(71, 21);
@@ -207,38 +193,31 @@ namespace ExcelSearchTool
             this.btnSheetSearch.UseVisualStyleBackColor = true;
             this.btnSheetSearch.Click += new System.EventHandler(this.btnSheetSearch_Click);
             // 
-            // clbColumns
-            // 
-            this.clbColumns.FormattingEnabled = true;
-            this.clbColumns.Location = new System.Drawing.Point(11, 94);
-            this.clbColumns.Name = "clbColumns";
-            this.clbColumns.Size = new System.Drawing.Size(169, 308);
-            this.clbColumns.TabIndex = 17;
-            this.clbColumns.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.clbColumns_ItemCheck);
-            // 
             // dgvSheet
             // 
             this.dgvSheet.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvSheet.Location = new System.Drawing.Point(186, 45);
+            this.dgvSheet.EnableHeadersVisualStyles = false;
+            this.dgvSheet.Location = new System.Drawing.Point(8, 71);
             this.dgvSheet.Name = "dgvSheet";
             this.dgvSheet.RowTemplate.Height = 23;
-            this.dgvSheet.Size = new System.Drawing.Size(729, 452);
+            this.dgvSheet.Size = new System.Drawing.Size(729, 428);
             this.dgvSheet.TabIndex = 16;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label3.Location = new System.Drawing.Point(18, 16);
+            this.label3.Location = new System.Drawing.Point(18, 41);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(88, 16);
+            this.label3.Size = new System.Drawing.Size(87, 16);
             this.label3.TabIndex = 14;
             this.label3.Text = "시트선택 :";
             // 
             // cmbSheet
             // 
+            this.cmbSheet.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbSheet.FormattingEnabled = true;
-            this.cmbSheet.Location = new System.Drawing.Point(109, 14);
+            this.cmbSheet.Location = new System.Drawing.Point(109, 39);
             this.cmbSheet.Name = "cmbSheet";
             this.cmbSheet.Size = new System.Drawing.Size(191, 20);
             this.cmbSheet.TabIndex = 0;
@@ -351,7 +330,7 @@ namespace ExcelSearchTool
             // 
             this.lblFileName.AutoSize = true;
             this.lblFileName.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lblFileName.Location = new System.Drawing.Point(83, 16);
+            this.lblFileName.Location = new System.Drawing.Point(82, 15);
             this.lblFileName.Name = "lblFileName";
             this.lblFileName.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.lblFileName.Size = new System.Drawing.Size(0, 16);
@@ -361,39 +340,31 @@ namespace ExcelSearchTool
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label1.Location = new System.Drawing.Point(19, 16);
+            this.label1.Location = new System.Drawing.Point(18, 15);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(77, 16);
+            this.label1.Size = new System.Drawing.Size(76, 16);
             this.label1.TabIndex = 13;
             this.label1.Text = "파일명 : ";
             // 
-            // label8
+            // lblSheetFileName
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(305, 19);
-            this.label8.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(61, 12);
-            this.label8.TabIndex = 33;
-            this.label8.Text = "헤더 행  : ";
+            this.lblSheetFileName.AutoSize = true;
+            this.lblSheetFileName.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblSheetFileName.Location = new System.Drawing.Point(82, 15);
+            this.lblSheetFileName.Name = "lblSheetFileName";
+            this.lblSheetFileName.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.lblSheetFileName.Size = new System.Drawing.Size(0, 16);
+            this.lblSheetFileName.TabIndex = 43;
             // 
-            // numHeaderRow
+            // label6
             // 
-            this.numHeaderRow.Location = new System.Drawing.Point(361, 16);
-            this.numHeaderRow.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.numHeaderRow.Name = "numHeaderRow";
-            this.numHeaderRow.Size = new System.Drawing.Size(41, 21);
-            this.numHeaderRow.TabIndex = 35;
-            this.numHeaderRow.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.numHeaderRow.ValueChanged += new System.EventHandler(this.numHeaderRow_ValueChanged);
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label6.Location = new System.Drawing.Point(18, 15);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(76, 16);
+            this.label6.TabIndex = 42;
+            this.label6.Text = "파일명 : ";
             // 
             // DetailForm
             // 
@@ -410,7 +381,6 @@ namespace ExcelSearchTool
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numHeaderRow)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -430,21 +400,19 @@ namespace ExcelSearchTool
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Label lblFileName;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label txtSheetSearch;
+        private System.Windows.Forms.Label lblSheetKeyword;
         private System.Windows.Forms.ComboBox cmbColumnFilter;
-        private System.Windows.Forms.Button btnSheetExport;
-        private System.Windows.Forms.Button btnSheetClose;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txtColumnFilter;
         private System.Windows.Forms.Button btnSheetSearch;
-        private System.Windows.Forms.CheckedListBox clbColumns;
         private System.Windows.Forms.DataGridView dgvSheet;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox cmbSheet;
-        private System.Windows.Forms.Label label7;
         private System.Windows.Forms.CheckBox chkAllColumns;
-        private System.Windows.Forms.NumericUpDown numHeaderRow;
-        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Button btnSheetExport;
+        private System.Windows.Forms.Button btnSheetClose;
+        private System.Windows.Forms.CheckedListBox clbColumns;
+        private System.Windows.Forms.Label lblSheetFileName;
+        private System.Windows.Forms.Label label6;
     }
 }
